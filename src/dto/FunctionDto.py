@@ -7,5 +7,4 @@ class FunctionDto(metaclass=CommonDto):
     range_to: float
     function: str
     use_template: bool
-    use_even_range: bool
     use_emissions: bool
