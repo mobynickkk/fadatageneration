@@ -1,7 +1,8 @@
 import typing as T
 
 from flask import Flask, request
-from src import MathServiceInterface, TaskDto, FunctionDto
+from src import MathServiceInterface, FunctionGraphicService, TaskDto, FunctionDto
+from test import MockMathService
 import json
 
 
@@ -36,5 +37,10 @@ class Application:
 
 
 if __name__ == '__main__':
-    application = Application(None)
-    application.run()
+    from sys import argv
+    if len(argv) >= 2 and argv[1] == 'test':
+        application = Application(MockMathService())
+        application.run(debug=True)
+    else:
+        application = Application(FunctionGraphicService())
+        application.run()
