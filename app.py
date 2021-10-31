@@ -1,16 +1,19 @@
 import typing as T
 
 from flask import Flask, request
-from src import MathServiceInterface, FunctionGraphicService, TaskDto, FunctionDto
-from test import MockMathService
+from src import MathServiceInterface, ValidationServiceInterface, \
+    FunctionValidationService, FunctionGraphicService, TaskDto, FunctionDto
+from test import MockMathService, MockValidationService
 
 
 class Application:
     __app = Flask(__name__)
     math_service: MathServiceInterface
+    validation_service: ValidationServiceInterface
 
-    def __init__(self, service: MathServiceInterface):
-        self.math_service = service
+    def __init__(self, math_service: MathServiceInterface, validation_service: ValidationServiceInterface):
+        self.math_service = math_service
+        self.validation_service = validation_service
         self.__static_init(self)
 
     def run(self, *args, **kwargs):
@@ -38,7 +41,7 @@ class Application:
             functions: T.List[FunctionDto] = [
                 Application.__process_json(obj, FunctionDto) for obj in json_['functions']
             ]
-            # TODO: сделать проверки
+            instance.validation_service.validate(functions)
             try:
                 return instance.math_service.run(TaskDto(user_id, functions)).to_json()
             except Exception as e:
@@ -48,8 +51,8 @@ class Application:
 if __name__ == '__main__':
     from sys import argv
     if len(argv) >= 2 and argv[1] == 'test':
-        application = Application(MockMathService())
+        application = Application(MockMathService(), MockValidationService())
         application.run(debug=True)
     else:
-        application = Application(FunctionGraphicService())
+        application = Application(FunctionGraphicService(), FunctionValidationService())
         application.run()
