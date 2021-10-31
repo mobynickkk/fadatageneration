@@ -1,5 +1,7 @@
+import typing as T
+
 from flask import Flask, request
-from src import MathServiceInterface, TaskDto
+from src import MathServiceInterface, TaskDto, FunctionDto
 import json
 
 
@@ -23,8 +25,14 @@ class Application:
 
         @instance.__app.route('/api', methods=['POST'])
         def api():
+            json_ = json.loads(request.get_json())
+            user_id: str = json_['user_id']
+            functions: T.List[FunctionDto] = json_['functions']
             # TODO: сделать проверки
-            return instance.math_service.run(TaskDto(json.loads(request.get_json())))
+            try:
+                return instance.math_service.run(TaskDto(user_id, functions)).to_json()
+            except Exception as e:
+                return f'Something went wrong due to {e}'
 
 
 if __name__ == '__main__':
