@@ -1,0 +1,1 @@
+$(document).ready(function () {$('.main-block').attr('id', Date.now())});
