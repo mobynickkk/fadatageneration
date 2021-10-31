@@ -2,7 +2,7 @@ import typing as T
 
 from flask import Flask, request
 from src import MathServiceInterface, ValidationServiceInterface, \
-    FunctionValidationService, FunctionGraphicService, TaskDto, FunctionDto
+    FunctionValidationService, FunctionGraphicService, TaskDto, FunctionDto, IncorrectDataError
 from test import MockMathService, MockValidationService
 
 
@@ -41,11 +41,13 @@ class Application:
             functions: T.List[FunctionDto] = [
                 Application.__process_json(obj, FunctionDto) for obj in json_['functions']
             ]
-            instance.validation_service.validate(functions)
             try:
+                instance.validation_service.validate(functions)
                 return instance.math_service.run(TaskDto(user_id, functions)).to_json()
+            except IncorrectDataError:
+                return 'Переданы некорректные данные'
             except Exception as e:
-                return f'Something went wrong due to {e}'
+                return f'Что-то пошло не так\n\t{e}'
 
 
 if __name__ == '__main__':
