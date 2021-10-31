@@ -3,7 +3,6 @@ import typing as T
 from flask import Flask, request
 from src import MathServiceInterface, FunctionGraphicService, TaskDto, FunctionDto
 from test import MockMathService
-import json
 
 
 class Application:
@@ -18,17 +17,27 @@ class Application:
         self.__app.run(*args, **kwargs)
 
     @staticmethod
+    def __process_json(json_, class_):
+        kwargs = dict()
+        for k in class_.__annotations__:
+            if k in json_:
+                kwargs[k] = json_[k]
+        return class_(**kwargs)
+
+    @staticmethod
     def __static_init(instance):
 
         @instance.__app.route('/')
         def index():
             return 'Welcome page'
 
-        @instance.__app.route('/api', methods=['POST'])
+        @instance.__app.route('/api/', methods=['POST'])
         def api():
-            json_ = json.loads(request.get_json())
+            json_ = request.get_json()
             user_id: str = json_['user_id']
-            functions: T.List[FunctionDto] = json_['functions']
+            functions: T.List[FunctionDto] = [
+                Application.__process_json(obj, FunctionDto) for obj in json_['functions']
+            ]
             # TODO: сделать проверки
             try:
                 return instance.math_service.run(TaskDto(user_id, functions)).to_json()
