@@ -1,10 +1,9 @@
 import typing as T
 
+from .CommonDto import CommonDto
 from .FunctionDto import FunctionDto
 
 
-class TaskDto:
+class TaskDto(metaclass=CommonDto):
+    user_id: str
     functions: T.List[FunctionDto]
-
-    def __init__(self, json: T.List[T.Dict[str, T.Any]]):
-        self.functions = [FunctionDto(el) for el in json]
