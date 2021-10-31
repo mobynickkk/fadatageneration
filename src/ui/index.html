@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataGeneration</title>
+    <link rel="stylesheet" href="./css/main-style.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap" rel="stylesheet">
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/add_function.js"></script>
+	<script type="text/javascript" src="js/Proverki.js"></script>
+	<script type="text/javascript" src="js/Generation.js"></script>
+	<script type="text/javascript" src="js/hash.js"></script>
+	
+
+</head>
+<body>
+    <div class = "main-block" >
+		<div class = "Input-Output">
+			<div class = "Input">
+				<div class="help-inp">
+				<div class = "upper-butt" >
+					<a href="#" id = "add" class = "add_function"><div class= "butt_txt">Добавить еще одну функцию</div></a>
+					<a href="#" id = "del" class = "add_function"><div class= "butt_txt">Удалить последнюю функцию</div></a>
+				</div>
+				<div class = "function">
+					<div class="pole_for_func" id="1">
+						<input class = "input_func" id="F_1" style = "width:31%" placeholder="Функция"></input>
+						<input class = "input_func_L" id = "L_1" style = "width:5%" placeholder="L" type="number"></input>
+						<input class = "input_func_R" id = "R_1" style = "width:5%" placeholder="R" type="number"></input>
+						<input class = "input_func" id = "S_1" style = "width:5%" placeholder="Шаг" type="number"></input>
+						<input class = "input_func" id="A_1" style = "width:5%" placeholder="Acc" type="number"></input>
+						<input class="checkbox-input" style = "margin-left:3%" type="checkbox" >Выбросы<Br>
+						<input class="checkbox-input" style = "margin-left:3%" type="checkbox" >Шаблоны<Br>
+					</div>
+					
+					
+					
+					
+				</div>
+				
+				<div class = "two-buttons">
+					<a href="#" class = "generate"><div class= "butt_txt">Сгенерировать данные</div></a>
+					<a href="#" class = "dwn_btm"><div class= "butt_txt">Сохранить CSV</div></a>
+				</div>
+				</div>
+			</div>
+			
+			<div class = "Output">
+			
+				<h1 class="grafik">График</h1>
+				<img class ="plot" src="img/logo.png" width="100%">	
+				
+				
+			</div>
+		</div>
+		
+		<div class = "bottom_of_main_block">
+			<div class = "btm_obj"><img src="img/down.png" ></div>
+			<div class = "btm_obj"><h1>Туториал</h1></div>
+			<div class = "btm_obj"><img src="img/down.png" ></div>
+			
+		</div>
+		
+	
+	</div>
+    
+</body>
+</html>
