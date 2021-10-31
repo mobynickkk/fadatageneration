@@ -6,12 +6,14 @@ $('document').ready(function(){
 		var hash = document.querySelector('.main-block').getAttribute('id')
 		var control = true
 		var main_dict = {}
-		main_dict[`${hash}`] = {}
-		var words = ['import', 'compile', 'eval', 'exec', 'try', 'except', 'return', 'def', 'class', 'type', 'dir', 'dict', 'list', 'tuple', 'while', 'for', 'in', 'range', 'yield', 'async', 'await', 'lambda']
+		main_dict = {}
+		main_dict["user_id"] = `${hash}`
+		main_dict["function"] = []
+		var words = ['import', 'compile', 'eval', 'exec', 'try', 'except', 'return', 'def', 'class', 'type', 'dir', 'dict', 'list', 'tuple', 'while', 'for', ' in', 'range', 'yield', 'async', 'await', 'lambda']
 		document.querySelectorAll('.pole_for_func').forEach(function(el){
 			control = true
 			var id = el.getAttribute('id')
-			var F = el.querySelector('#F_{i}'.replace(new RegExp("{i}", "g"),id)).value
+			var F = String(el.querySelector('#F_{i}'.replace(new RegExp("{i}", "g"),id)).value)
 			for (v in words){
 				if (F.includes(words[v])){
 					control = false
@@ -26,7 +28,7 @@ $('document').ready(function(){
 			
 			var S = parseFloat(el.querySelector('#S_{i}'.replace(new RegExp("{i}", "g"),id)).value)
 			if (S > Math.abs(L-R)|| S < 0){control = false};
-		
+			
 			var A = parseFloat(el.querySelector('#A_{i}'.replace(new RegExp("{i}", "g"),id)).value)
 			if (A <= 0 || A >= 1 ){control = false};
 			
@@ -34,17 +36,18 @@ $('document').ready(function(){
 			var P = el.querySelectorAll('.checkbox-input')[1].checked
 			
 		
-			if (!isNaN(F)|| isNaN(L)|| isNaN(R)|| isNaN(S)|| isNaN(A)){control=false}
+			if (F == ""|| isNaN(L)|| isNaN(R)|| isNaN(S)|| isNaN(A)){control=false}
 			
 			if (control){
-				main_dict[`${hash}`][`${id}`] = {}
-				main_dict[`${hash}`][`${id}`]['F'] = `${F}`
-				main_dict[`${hash}`][`${id}`]['L'] = `${L}`
-				main_dict[`${hash}`][`${id}`]['R'] = `${R}`
-				main_dict[`${hash}`][`${id}`]['S'] = `${S}`
-				main_dict[`${hash}`][`${id}`]['A'] = `${A}`
-				main_dict[`${hash}`][`${id}`]['V'] = `${V}`
-				main_dict[`${hash}`][`${id}`]['P'] = `${P}`
+				help_dict = {}
+				help_dict['function'] = `${F}`
+				help_dict['range_from'] = `${L}`
+				help_dict['range_to'] = `${R}`
+				help_dict['use_even_range'] = `${S}`
+				help_dict['accuracy'] = `${A}`
+				help_dict['use_emissions'] = `${V}`
+				help_dict['use_template'] = `${P}`
+				main_dict["function"].push(help_dict)
 			}else{
 				$('#{id}'.replace(new RegExp("{id}", "g"),id)).css('borderColor','red')
 			}
