@@ -81,4 +81,4 @@ class FunctionGraphicService(MathServiceInterface):
         scatter(main_x, main_y)
         savefig('{}.png'.format(dto.user_id), dpi=100)
         savetxt('{}.csv'.format(dto.user_id), vstack((main_x, main_y)).T, delimiter=',')
-        return CompletedTaskDto(['{}.png'.format(dto.user_id), '{}.csv'.format(dto.user_id)])
+        return CompletedTaskDto('{}.csv'.format(dto.user_id), '{}.png'.format(dto.user_id))
