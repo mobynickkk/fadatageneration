@@ -1,13 +1,13 @@
 import typing as T
 
-from flask import Flask, request
+from flask import Flask, request, render_template, send_from_directory
 from src import MathServiceInterface, ValidationServiceInterface, \
     FunctionValidationService, FunctionGraphicService, TaskDto, FunctionDto, IncorrectDataError, CalculationError
 from test import MockMathService, MockValidationService
 
 
 class Application:
-    __app = Flask(__name__)
+    __app = Flask(__name__, template_folder='src/ui/', static_folder='src/ui/')
     math_service: MathServiceInterface
     validation_service: ValidationServiceInterface
 
@@ -32,7 +32,19 @@ class Application:
 
         @instance.__app.route('/')
         def index():
-            return 'Welcome page'
+            return render_template('index.html')
+
+        @instance.__app.route('/js/<path:path>')
+        def send_js(path):
+            return send_from_directory('src/ui/js', path)
+
+        @instance.__app.route('/img/<path:path>')
+        def send_img(path):
+            return send_from_directory('src/ui/img', path)
+
+        @instance.__app.route('/css/<path:path>')
+        def send_css(path):
+            return send_from_directory('src/ui/css', path)
 
         @instance.__app.route('/api/', methods=['POST'])
         def api():
