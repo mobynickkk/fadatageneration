@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from .MathServiceInterface import MathServiceInterface
-from ..exceptions import CalculationError
-from ..dto import TaskDto, CompletedTaskDto
+from ..exceptions import IncorrectDataError
+from ..dto import FunctionDto, TaskDto, CompletedTaskDto
 
 
 class FunctionGraphicService(MathServiceInterface):
@@ -23,66 +23,72 @@ class FunctionGraphicService(MathServiceInterface):
         return CompletedTaskDto(f'{dto.user_id}.csv', f'{dto.user_id}.png')
 
     @staticmethod
-    def get_factor() -> float:
-        return (0.5 - random.random()) * 10
+    def __get_function(function_dto: FunctionDto):
+        try:
+            return eval('lambda x: ' + function_dto.function)
+        except Exception:
+            raise IncorrectDataError(f'Ошибка при попытке расчета функции {function_dto.function}')
+
+    @staticmethod
+    def __get_factor(val: float = 10.) -> float:
+        return (0.5 - random.random()) * val
+
+    def __calc_first_function(self, function_dto: FunctionDto, main_x: np.ndarray) -> (np.ndarray, np.ndarray):
+        main_y = []
+        d = []
+
+        func = self.__get_function(function_dto)
+
+        for ind, el in enumerate(main_x):
+            try:
+                y = func(el)
+                main_y.append(y + self.__get_factor(function_dto.accuracy)
+                              if function_dto.use_emissions
+                              else y)
+            except Exception:
+                d.append(ind)
+
+        main_x = np.delete(main_x, d)
+        del d
+        return main_x, main_y
 
     def run(self, dto: TaskDto) -> CompletedTaskDto:
         from warnings import filterwarnings
 
         filterwarnings("ignore", category=FutureWarning)
 
-        for func in dto.functions:
-            if func.use_template:
-                func.function = func.function.replace('x', f'({self.get_factor()}*x+{self.get_factor()})')
-                func.function = func.function.replace(func.function,
-                                                      f'{self.get_factor()}*({func.function})+{self.get_factor()}')
+        for function_dto in dto.functions:
+            if function_dto.use_template:
+                function_dto.function = function_dto.function.replace(
+                    'x', f'({self.__get_factor()}*x+{self.__get_factor()})')
+                function_dto.function = function_dto.function.replace(
+                    function_dto.function, f'{self.__get_factor()}*({function_dto.function})+{self.__get_factor()}')
 
-        main_x = np.arange(dto.functions[0].range_from, dto.functions[0].range_to,
-                           dto.functions[0].step
-                           if dto.functions[0].step
-                           else self.step_h(dto.functions[0].range_from, dto.functions[0].range_to))
+        main_x, main_y = self.__calc_first_function(dto.functions[0],
+                                                    np.arange(dto.functions[0].range_from, dto.functions[0].range_to,
+                                                              dto.functions[0].step
+                                                              if dto.functions[0].step
+                                                              else self.step_h(dto.functions[0].range_from,
+                                                                               dto.functions[0].range_to))
+                                                    )
 
-        if dto.functions[0].use_emissions:
-            main_y = []
-            d = []
-            for ind, el in enumerate(main_x):
+        for function_dto in dto.functions[1:]:
+            func = self.__get_function(function_dto)
+            c = main_y[-1] - func(function_dto.range_from)
+
+            step = function_dto.step \
+                if function_dto.step \
+                else self.step_h(function_dto.range_from, function_dto.range_to)
+
+            for i in np.arange(function_dto.range_from, function_dto.range_to, step):
                 try:
-                    y = eval(dto.functions[0].function.replace('x', str(el)))
-                    main_y.append(y + dto.functions[0].accuracy * (0.5 - random.random()))
+                    y = func(i) + c
+                    main_x = np.append(main_x, i)
+                    main_y = np.append(main_y,
+                                       y + self.__get_factor(function_dto.accuracy)
+                                       if function_dto.use_emissions
+                                       else y)
                 except Exception:
-                    d.append(ind)
-            main_x = np.delete(main_x, d)
-            del d
-        else:
-            main_y = []
-            d = []
-            for ind, el in enumerate(main_x):
-                try:
-                    y = eval(dto.functions[0].function.replace('x', str(el)))
-                    main_y.append(y)
-                except Exception:
-                    d.append(ind)
-            main_x = np.delete(main_x, d)
-            del d
-
-        for func in dto.functions[1:]:
-            c = main_y[-1] - eval(func.function.replace('x', str(func.range_from)))
-            step = func.step if func.step else self.step_h(func.range_from, func.range_to)
-
-            for i in np.arange(func.range_from, func.range_to, step):
-                if func.use_emissions:
-                    try:
-                        y = eval(func.function.replace('x', str(i))) + c
-                        main_x = np.append(main_x, i)
-                        main_y = np.append(main_y, y + func.accuracy * (0.5 - random.random()))
-                    except Exception:
-                        raise CalculationError()
-                else:
-                    try:
-                        y = eval(func.function.replace('x', str(i))) + c
-                        main_x = np.append(main_x, i)
-                        main_y = np.append(main_y, y)
-                    except Exception:
-                        raise CalculationError()
+                    continue
 
         return self.__save_data(main_x, main_y, dto)

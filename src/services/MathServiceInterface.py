@@ -10,4 +10,3 @@ class MathServiceInterface:
         :return: расположение графика в формате картинки и csv файла с точками для аппроксимации
         """
         raise NotImplementedError('This is interface method')
-        
