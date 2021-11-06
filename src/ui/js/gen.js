@@ -61,7 +61,9 @@ $('document').ready(function () {
 			type:"POST",
 			url:"https://fa-data.herokuapp.com/api/",
 			data:JSON.stringify(main_dict),
-			success: function(data){$(".plot").attr("src", data);}
+			success: 
+			console.log(data)
+			function(data){$(".plot").attr("src", data);}
 		})
 
 	})
