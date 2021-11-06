@@ -46,7 +46,7 @@ class Application:
         def send_css(path):
             return send_from_directory('src/ui/css', path)
            
-        @instance.app.route('/png/<path:path>')
+        @instance.app.route('/tmp/<path:path>')
         def send_png(path):
             return send_from_directory('tmp/png', path)
             
