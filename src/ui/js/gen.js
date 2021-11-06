@@ -65,6 +65,7 @@ $('document').ready(function () {
 			console.log(data);
 			$(".plot").attr("src", data);}
 			
+			
 		})
 
 	})
