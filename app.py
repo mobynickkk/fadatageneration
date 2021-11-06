@@ -50,6 +50,7 @@ class Application:
         def send_png(path):
             return send_from_directory('src/ui/tmp', path)            
 
+
         @instance.app.route('/api/', methods=['POST'])
         def api():
             json_ = request.get_json()
