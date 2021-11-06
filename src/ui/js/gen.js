@@ -67,7 +67,7 @@ $('document').ready(function () {
 			data:JSON.stringify(main_dict),
 			success: function(data){
 			console.log(data);
-			$(".plot").attr("src", data);}		
+			$(".plot").attr("src", data['img_base64']);}		
 			
 		})
 
