@@ -91,5 +91,4 @@ class FunctionGraphicService(MathServiceInterface):
                 except Exception:
                     continue
 
-        return self.__save_data(main_x, main_y, dto)
-        
+        return self.__save_data(main_x, main_y, dto)        
