@@ -47,7 +47,7 @@ $('document').ready(function () {
 				help_dict['accuracy'] = `${A}`
 				help_dict['use_emissions'] = `${V}`
 				help_dict['use_template'] = `${P}`
-				main_dict["function"].push(help_dict)
+				main_dict["functions"].push(help_dict)
 			} else {
 				$('#{id}'.replace(new RegExp("{id}", "g"), id)).css('borderColor', 'red')
 			}
