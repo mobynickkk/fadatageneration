@@ -62,6 +62,8 @@ $('document').ready(function () {
 		$.ajax({
 			type:"POST",
 			url:"https://fa-data.herokuapp.com/api/",
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
 			data:JSON.stringify(main_dict),
 			success: function(data){
 			console.log(data);
