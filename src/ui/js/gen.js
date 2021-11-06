@@ -66,8 +66,8 @@ $('document').ready(function () {
 			dataType: "json",
 			data:JSON.stringify(main_dict),
 			success: function(data){
-			console.log(data);
-			$(".plot").attr("src", data['img_base64']);}				
+			console.log(data['img_base64']);
+			$(".plot").attr("src", 'https://fa-data.herokuapp.com/tmp/{i}'.replace(new RegExp("{i}", "g"), data['img_base64']));}				
 		})
 
 	})
