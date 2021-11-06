@@ -18,8 +18,8 @@ class FunctionGraphicService(MathServiceInterface):
     @staticmethod
     def __save_data(x: np.ndarray, y: np.ndarray, dto: TaskDto):
         plt.scatter(x, y)
-        plt.savefig(f'src/ui/tmp/{dto.user_id}.png', dpi=100)
-        np.savetxt(f'src/ui/tmp/{dto.user_id}.csv', np.vstack((x, y)).T, delimiter=',')
+        plt.savefig(f'src/ui/img/{dto.user_id}.png', dpi=100)
+        np.savetxt(f'src/ui/img/{dto.user_id}.csv', np.vstack((x, y)).T, delimiter=',')
         return CompletedTaskDto(f'{dto.user_id}.csv', f'{dto.user_id}.png')
 
     @staticmethod
