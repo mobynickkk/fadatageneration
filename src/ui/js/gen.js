@@ -30,7 +30,7 @@ $('document').ready(function () {
 			if (S > Math.abs(L - R) || S < 0) { control = false };
 
 			var A = parseFloat(el.querySelector('#A_{i}'.replace(new RegExp("{i}", "g"), id)).value)
-			if (A <= 0 || A >= 1) { control = false };
+			
 
 			var V = el.querySelectorAll('.checkbox-input')[0].checked
 			var P = el.querySelectorAll('.checkbox-input')[1].checked
@@ -61,9 +61,9 @@ $('document').ready(function () {
 			type:"POST",
 			url:"https://fa-data.herokuapp.com/api/",
 			data:JSON.stringify(main_dict),
-			success: 
+			success: {
 			console.log(data)
-			function(data){$(".plot").attr("src", data);}
+			function(data){$(".plot").attr("src", data);}}
 		})
 
 	})
