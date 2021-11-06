@@ -35,7 +35,6 @@ $('document').ready(function () {
 			var V = el.querySelectorAll('.checkbox-input')[0].checked
 			var P = el.querySelectorAll('.checkbox-input')[1].checked
 
-
 			if (F == "" || isNaN(L) || isNaN(R) || isNaN(S) || isNaN(A)) { control = false }
 
 			if (control) {
