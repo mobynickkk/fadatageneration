@@ -22,6 +22,7 @@ $('document').ready(function () {
 
 			}
 
+
 			var L = parseFloat(el.querySelector('#L_{i}'.replace(new RegExp("{i}", "g"), id)).value)
 			var R = parseFloat(el.querySelector('#R_{i}'.replace(new RegExp("{i}", "g"), id)).value)
 			if (L > R) { control = false };
