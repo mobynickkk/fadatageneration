@@ -69,7 +69,6 @@ $('document').ready(function () {
 			console.log(data['img_base64']);
 			$(".plot").attr("src", 'https://fa-data.herokuapp.com/tmp/{i}'.replace(new RegExp("{i}", "g"), data['img_base64']));}				
 		})
-
 	})
 
 
