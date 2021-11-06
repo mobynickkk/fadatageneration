@@ -64,6 +64,7 @@ $('document').ready(function () {
 			success: {
 			console.log(data);
 			function(data){$(".plot").attr("src", data);}}
+			
 		})
 
 	})
