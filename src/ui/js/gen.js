@@ -40,12 +40,12 @@ $('document').ready(function () {
 			if (control) {
 				help_dict = {}
 				help_dict['function'] = `${F}`
-				help_dict['range_from'] = `${L}`
-				help_dict['range_to'] = `${R}`
-				help_dict['use_even_range'] = `${S}`
-				help_dict['accuracy'] = `${A}`
-				help_dict['use_emissions'] = `${V}`
-				help_dict['use_template'] = `${P}`
+				help_dict['range_from'] = L
+				help_dict['range_to'] = R
+				help_dict['use_even_range'] = S
+				help_dict['accuracy'] = A
+				help_dict['use_emissions'] = V
+				help_dict['use_template'] = P
 				main_dict["functions"].push(help_dict)
 			} else {
 				$('#{id}'.replace(new RegExp("{id}", "g"), id)).css('borderColor', 'red')
