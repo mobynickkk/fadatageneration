@@ -49,6 +49,7 @@ class Application:
         @instance.app.route('/png/<path:path>')
         def send_png(path):
             return send_from_directory('tmp/png', path)
+            
 
         @instance.app.route('/api/', methods=['POST'])
         def api():
