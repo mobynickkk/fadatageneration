@@ -8,7 +8,7 @@ $('document').ready(function () {
 		var main_dict = {}
 		main_dict = {}
 		main_dict["user_id"] = `${hash}`
-		main_dict["function"] = []
+		main_dict["functions"] = []
 		var words = ['import', 'compile', 'eval', 'exec', 'try', 'except', 'return', 'def', 'class', 'type', 'dir', 'dict', 'list', 'tuple', 'while', 'for', ' in', 'range', 'yield', 'async', 'await', 'lambda']
 		document.querySelectorAll('.pole_for_func').forEach(function (el) {
 			control = true
