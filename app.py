@@ -67,7 +67,6 @@ class Application:
             except Exception as e:
                 return f'Что-то пошло не так\n\t{e}'
 
-
 runtime_application = Application(FunctionGraphicService(), FunctionValidationService()).app
 
 if __name__ == '__main__':
