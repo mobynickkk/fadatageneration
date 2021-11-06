@@ -57,12 +57,12 @@ $('document').ready(function () {
 
 
 		console.log(JSON.stringify(main_dict));
-		/* $.ajax({
+		$.ajax({
 			type:"POST",
-			url:"#",
+			url:"https://fa-data.herokuapp.com/api/",
 			data:JSON.stringify(main_dict),
 			success: function(data){$(".plot").attr("src", data);}
-		}) */
+		})
 
 	})
 
