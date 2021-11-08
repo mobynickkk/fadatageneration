@@ -76,6 +76,7 @@ $('document').ready(function () {
             success: function (data) {
                 console.log(data['img_base64']);
                 $("#plot").attr("src", `http://fa-data.herokuapp.com/${data['img_base64']}`);
+                $("#save").attr("href", `http://fa-data.herokuapp.com/${data['csv_path']}`);
             }
         })
     })
