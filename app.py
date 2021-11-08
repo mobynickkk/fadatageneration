@@ -52,14 +52,7 @@ class Application:
            
         @instance.app.route('/tmp/<path:path>')
         def send_tmp(path):
-            try:
-                return send_from_directory('tmp', path)
-            finally:
-                instance.tmp_count += 1
-                if instance.tmp_count >= 200:
-                    instance.tmp_count = 0
-                    shutil.rmtree('tmp', ignore_errors=True)
-                    os.makedirs('tmp', exist_ok=True)
+            return send_from_directory('tmp', path)
 
         @instance.app.route('/test/<path:path>')
         def send_test(path):
@@ -67,6 +60,11 @@ class Application:
 
         @instance.app.route('/api/', methods=['POST'])
         def api():
+            instance.tmp_count += 1
+            if instance.tmp_count >= 200:
+                instance.tmp_count = 0
+                shutil.rmtree('tmp', ignore_errors=True)
+                os.makedirs('tmp', exist_ok=True)
             json_ = request.get_json()
             user_id: str = json_['user_id']
             functions: T.List[FunctionDto] = [
