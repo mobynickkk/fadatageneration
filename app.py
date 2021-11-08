@@ -56,7 +56,7 @@ class Application:
                 return send_from_directory('tmp', path)
             finally:
                 instance.tmp_count += 1
-                if instance.tmp_count >= 20:
+                if instance.tmp_count >= 200:
                     instance.tmp_count = 0
                     shutil.rmtree('tmp', ignore_errors=True)
                     os.makedirs('tmp', exist_ok=True)
