@@ -1,6 +1,7 @@
 import typing as T
 
 from flask import Flask, request, render_template, send_from_directory
+
 from src import MathServiceInterface, ValidationServiceInterface, \
     FunctionValidationService, FunctionGraphicService, TaskDto, FunctionDto, IncorrectDataError, CalculationError
 from test import MockMathService, MockValidationService
@@ -47,9 +48,12 @@ class Application:
             return send_from_directory('src/ui/css', path)
            
         @instance.app.route('/tmp/<path:path>')
-        def send_png(path):
-            return send_from_directory('src/ui/img', path)            
+        def send_tmp(path):
+            return send_from_directory('tmp', path)
 
+        @instance.app.route('/test/<path:path>')
+        def send_test(path):
+            return send_from_directory('test', path)
 
         @instance.app.route('/api/', methods=['POST'])
         def api():
@@ -67,6 +71,7 @@ class Application:
                 return 'Ошибка в вычислениях'
             except Exception as e:
                 return f'Что-то пошло не так\n\t{e}'
+
 
 runtime_application = Application(FunctionGraphicService(), FunctionValidationService()).app
 

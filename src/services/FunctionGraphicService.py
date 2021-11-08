@@ -18,9 +18,9 @@ class FunctionGraphicService(MathServiceInterface):
     @staticmethod
     def __save_data(x: np.ndarray, y: np.ndarray, dto: TaskDto):
         plt.scatter(x, y)
-        plt.savefig(f'src/ui/img/{dto.user_id}.png', dpi=100)
-        np.savetxt(f'src/ui/img/{dto.user_id}.csv', np.vstack((x, y)).T, delimiter=',')
-        return CompletedTaskDto(f'{dto.user_id}.csv', f'{dto.user_id}.png')
+        plt.savefig(f'tmp/{dto.user_id}.png', dpi=100)
+        np.savetxt(f'tmp/{dto.user_id}.csv', np.vstack((x, y)).T, delimiter=',')
+        return CompletedTaskDto(f'tmp/{dto.user_id}.csv', f'tmp/{dto.user_id}.png')
 
     @staticmethod
     def __get_function(function_dto: FunctionDto):
@@ -45,7 +45,8 @@ class FunctionGraphicService(MathServiceInterface):
                 main_y.append(y + self.__get_factor(function_dto.accuracy)
                               if function_dto.use_emissions
                               else y)
-            except Exception:
+            except Exception as e:
+                print(f'Step {ind} skipped because of {e}')
                 d.append(ind)
 
         main_x = np.delete(main_x, d)
@@ -88,7 +89,8 @@ class FunctionGraphicService(MathServiceInterface):
                                        y + self.__get_factor(function_dto.accuracy)
                                        if function_dto.use_emissions
                                        else y)
-                except Exception:
+                except Exception as e:
+                    print(f'Step {i} skipped because of {e}')
                     continue
 
         return self.__save_data(main_x, main_y, dto)        
