@@ -66,7 +66,7 @@ $('document').ready(function () {
         console.log(JSON.stringify(main_dict));
         $.ajax({
             type: "POST",
-            url: "http://fa-data.herokuapp.com/api/",
+            url: "https://fa-data.herokuapp.com/api/",
             contentType: "application/json; charset=utf-8",
             headers: {
                 "Access-Control-Allow-Origin": "*",
@@ -75,8 +75,8 @@ $('document').ready(function () {
             data: JSON.stringify(main_dict),
             success: function (data) {
                 console.log(data['img_base64']);
-                $("#plot").attr("src", `http://fa-data.herokuapp.com/${data['img_base64']}`);
-                $("#save").attr("href", `http://fa-data.herokuapp.com/${data['csv_path']}`);
+                $("#plot").attr("src", `https://fa-data.herokuapp.com/${data['img_base64']}`);
+                $("#save").attr("href", `https://fa-data.herokuapp.com/${data['csv_path']}`);
             }
         })
     })
