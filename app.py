@@ -60,13 +60,15 @@ class Application:
 
         @instance.app.route('/api/', methods=['POST'])
         def api():
+            json_ = request.get_json()
+            user_id: str = json_['user_id']
+            shutil.rmtree(f'tmp/{user_id}.png', ignore_errors=True)
+            shutil.rmtree(f'tmp/{user_id}.csv', ignore_errors=True)
             instance.tmp_count += 1
             if instance.tmp_count >= 200:
                 instance.tmp_count = 0
                 shutil.rmtree('tmp', ignore_errors=True)
                 os.makedirs('tmp', exist_ok=True)
-            json_ = request.get_json()
-            user_id: str = json_['user_id']
             functions: T.List[FunctionDto] = [
                 Application.__process_json(obj, FunctionDto) for obj in json_['functions']
             ]
