@@ -24,8 +24,18 @@ class FunctionGraphicService(MathServiceInterface):
 
     @staticmethod
     def __get_function(function_dto: FunctionDto):
+        external_functions = {
+            'sin': np.sin,
+            'cos': np.cos,
+            'tg': np.tan,
+            'atg': np.arctan,
+            'acos': np.arccos,
+            'asin': np.arcsin,
+            'e': np.e,
+            'exp': np.exp
+        }
         try:
-            return eval('lambda x: ' + function_dto.function)
+            return eval('lambda x: ' + function_dto.function, external_functions)
         except Exception:
             raise IncorrectDataError(f'Ошибка при попытке расчета функции {function_dto.function}')
 
