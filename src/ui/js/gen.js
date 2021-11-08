@@ -5,7 +5,7 @@ $('document').ready(function () {
         let hash = document.querySelector('.main-block').getAttribute('id')
         let control = true
         let main_dict = {
-        	user_id: `${hash}`,
+        	user_id: `${hash}-${Date.now()}`,
 			functions: []
 		}
         let words = ['import', 'compile', 'eval', 'exec', 'try', 'except', 'return', 'def', 'class', 'type', 'dir',
