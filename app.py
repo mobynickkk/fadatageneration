@@ -1,6 +1,8 @@
 import typing as T
 
 from flask import Flask, request, render_template, send_from_directory
+import shutil
+import os
 
 from src import MathServiceInterface, ValidationServiceInterface, \
     FunctionValidationService, FunctionGraphicService, TaskDto, FunctionDto, IncorrectDataError, CalculationError
@@ -16,6 +18,7 @@ class Application:
         self.math_service = math_service
         self.validation_service = validation_service
         self.__static_init(self)
+        self.tmp_count = 0
 
     def run(self, *args, **kwargs):
         self.app.run(*args, **kwargs)
@@ -49,7 +52,14 @@ class Application:
            
         @instance.app.route('/tmp/<path:path>')
         def send_tmp(path):
-            return send_from_directory('tmp', path)
+            try:
+                return send_from_directory('tmp', path)
+            finally:
+                instance.tmp_count += 1
+                if instance.tmp_count >= 20:
+                    instance.tmp_count = 0
+                    shutil.rmtree('tmp', ignore_errors=True)
+                    os.makedirs('tmp', exist_ok=True)
 
         @instance.app.route('/test/<path:path>')
         def send_test(path):
