@@ -17,21 +17,35 @@ class FunctionGraphicService(MathServiceInterface):
 
     @staticmethod
     def __save_data(x: np.ndarray, y: np.ndarray, dto: TaskDto):
+        plt.clf()
         plt.scatter(x, y)
-        plt.savefig(f'{dto.user_id}.png', dpi=100)
-        np.savetxt(f'{dto.user_id}.csv', np.vstack((x, y)).T, delimiter=',')
-        return CompletedTaskDto(f'{dto.user_id}.csv', f'{dto.user_id}.png')
-
-    @staticmethod
-    def __get_function(function_dto: FunctionDto):
-        try:
-            return eval('lambda x: ' + function_dto.function)
-        except Exception:
-            raise IncorrectDataError(f'Ошибка при попытке расчета функции {function_dto.function}')
+        plt.savefig(f'tmp/{dto.user_id}.png', dpi=100)
+        np.savetxt(f'tmp/{dto.user_id}.csv', np.vstack((x, y)).T, delimiter=',')
+        return CompletedTaskDto(f'tmp/{dto.user_id}.csv', f'tmp/{dto.user_id}.png')
 
     @staticmethod
     def __get_factor(val: float = 10.) -> float:
         return (0.5 - random.random()) * val
+
+    def __get_function(self, function_dto: FunctionDto):
+        external_functions = {
+            'sin': np.sin,
+            'cos': np.cos,
+            'tg': np.tan,
+            'atg': np.arctan,
+            'acos': np.arccos,
+            'asin': np.arcsin,
+            'e': np.e,
+            'exp': np.exp
+        }
+        func = function_dto.function
+        if function_dto.use_template:
+            func = function_dto.function.replace('x', f'({self.__get_factor()}*x+{self.__get_factor()})')
+            func = f'{self.__get_factor()}*({func})+{self.__get_factor()}'
+        try:
+            return eval('lambda x: ' + func, external_functions)
+        except Exception:
+            raise IncorrectDataError(f'Ошибка при попытке расчета функции {function_dto.function}')
 
     def __calc_first_function(self, function_dto: FunctionDto, main_x: np.ndarray) -> (np.ndarray, np.ndarray):
         main_y = []
@@ -45,7 +59,8 @@ class FunctionGraphicService(MathServiceInterface):
                 main_y.append(y + self.__get_factor(function_dto.accuracy)
                               if function_dto.use_emissions
                               else y)
-            except Exception:
+            except Exception as e:
+                print(f'Step {ind} skipped because of {e}')
                 d.append(ind)
 
         main_x = np.delete(main_x, d)
@@ -56,13 +71,6 @@ class FunctionGraphicService(MathServiceInterface):
         from warnings import filterwarnings
 
         filterwarnings("ignore", category=FutureWarning)
-
-        for function_dto in dto.functions:
-            if function_dto.use_template:
-                function_dto.function = function_dto.function.replace(
-                    'x', f'({self.__get_factor()}*x+{self.__get_factor()})')
-                function_dto.function = function_dto.function.replace(
-                    function_dto.function, f'{self.__get_factor()}*({function_dto.function})+{self.__get_factor()}')
 
         main_x, main_y = self.__calc_first_function(dto.functions[0],
                                                     np.arange(dto.functions[0].range_from, dto.functions[0].range_to,
@@ -88,7 +96,8 @@ class FunctionGraphicService(MathServiceInterface):
                                        y + self.__get_factor(function_dto.accuracy)
                                        if function_dto.use_emissions
                                        else y)
-                except Exception:
+                except Exception as e:
+                    print(f'Step {i} skipped because of {e}')
                     continue
 
-        return self.__save_data(main_x, main_y, dto)
+        return self.__save_data(main_x, main_y, dto)        

@@ -1,13 +1,16 @@
 import typing as T
 
-from flask import Flask, request
+from flask import Flask, request, render_template, send_from_directory
+import shutil
+import os
+
 from src import MathServiceInterface, ValidationServiceInterface, \
     FunctionValidationService, FunctionGraphicService, TaskDto, FunctionDto, IncorrectDataError, CalculationError
 from test import MockMathService, MockValidationService
 
 
 class Application:
-    __app = Flask(__name__)
+    app = Flask(__name__, template_folder='src/ui/', static_folder='src/ui/')
     math_service: MathServiceInterface
     validation_service: ValidationServiceInterface
 
@@ -15,9 +18,10 @@ class Application:
         self.math_service = math_service
         self.validation_service = validation_service
         self.__static_init(self)
+        self.tmp_count = 0
 
     def run(self, *args, **kwargs):
-        self.__app.run(*args, **kwargs)
+        self.app.run(*args, **kwargs)
 
     @staticmethod
     def __process_json(json_, class_):
@@ -30,14 +34,41 @@ class Application:
     @staticmethod
     def __static_init(instance):
 
-        @instance.__app.route('/')
+        @instance.app.route('/')
         def index():
-            return 'Welcome page'
+            return render_template('index.html')
 
-        @instance.__app.route('/api/', methods=['POST'])
+        @instance.app.route('/js/<path:path>')
+        def send_js(path):
+            return send_from_directory('src/ui/js', path)
+
+        @instance.app.route('/img/<path:path>')
+        def send_img(path):
+            return send_from_directory('src/ui/img', path)
+
+        @instance.app.route('/css/<path:path>')
+        def send_css(path):
+            return send_from_directory('src/ui/css', path)
+           
+        @instance.app.route('/tmp/<path:path>')
+        def send_tmp(path):
+            return send_from_directory('tmp', path)
+
+        @instance.app.route('/test/<path:path>')
+        def send_test(path):
+            return send_from_directory('test', path)
+
+        @instance.app.route('/api/', methods=['POST'])
         def api():
             json_ = request.get_json()
             user_id: str = json_['user_id']
+            shutil.rmtree(f'tmp/{user_id}.png', ignore_errors=True)
+            shutil.rmtree(f'tmp/{user_id}.csv', ignore_errors=True)
+            instance.tmp_count += 1
+            if instance.tmp_count >= 200:
+                instance.tmp_count = 0
+                shutil.rmtree('tmp', ignore_errors=True)
+                os.makedirs('tmp', exist_ok=True)
             functions: T.List[FunctionDto] = [
                 Application.__process_json(obj, FunctionDto) for obj in json_['functions']
             ]
@@ -52,11 +83,8 @@ class Application:
                 return f'Что-то пошло не так\n\t{e}'
 
 
+runtime_application = Application(FunctionGraphicService(), FunctionValidationService()).app
+
 if __name__ == '__main__':
-    from sys import argv
-    if len(argv) >= 2 and argv[1] == 'test':
-        application = Application(MockMathService(), MockValidationService())
-        application.run(debug=True)
-    else:
-        application = Application(FunctionGraphicService(), FunctionValidationService())
-        application.run()
+    application = Application(MockMathService(), MockValidationService())
+    application.run(debug=True)
